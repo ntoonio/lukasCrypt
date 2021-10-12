@@ -1,0 +1,72 @@
+<html>
+	<head>
+
+	</head>
+	<body>
+		<h3>Nyckel</h3>
+		<input id="key" type="text">
+		<h3>Chiffer</h3>
+		<textarea id="cipher" cols="60" rows="10"></textarea>
+		<h3>Text</h3>
+		<textarea id="text" cols="60" rows="10"></textarea>
+	</body>
+</html>
+<script>
+	const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ"
+
+	function shift(text, key, shift=1) {
+		var out = ""
+		var j = 0
+		for (let i = 0; i < text.length; i++) {
+			if (text[i] == " ") {
+				out += " "
+				j = 0
+				continue
+			}
+
+			const ll = text.charAt(i)
+			const ap = CHARS.indexOf(ll)
+			var pos = ap + key[j % key.length] * shift
+			if (pos < 0)
+				pos += 29
+			out += CHARS[pos % CHARS.length]
+			j += 1
+		}
+		return out
+	}
+
+	function decipher(cipher, key) {
+		return shift(cipher, key, 1)
+	}
+
+	function enchiper(text, key) {
+		return shift(text, key, -1)
+	}
+
+	const cipherDOM = document.getElementById("cipher")
+	const textDOM = document.getElementById("text")
+	const keyDOM = document.getElementById("key")
+
+	var key = [2, 1, 3, 3, 1, 2]
+
+	keyDOM.value = key.join(" ")
+
+	cipherDOM.oninput = () => {
+		keyDOM.disabled = cipherDOM.value != ""
+		textDOM.value = decipher(cipherDOM.value.toUpperCase(), key)
+	}
+
+	textDOM.oninput = () => {
+		keyDOM.disabled = textDOM.value != ""
+		cipherDOM.value = enchiper(textDOM.value.toUpperCase(), key)
+	}
+
+	keyDOM.oninput = () => {
+		key = []
+		keyDOM.value.split(" ").forEach(element => {
+			key.push(parseInt(element))
+		})
+	}
+
+
+</script>
